@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="8dp" />
+    <item android:state_pressed="true"  android:drawable="@drawable/img_bkg_gradient_click"/>
+    <item android:state_pressed="false" android:drawable="@drawable/img_bkg_gradient"/>
+</selector>
