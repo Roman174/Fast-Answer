@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.fastanswer.AboutPage">
+    tools:context="com.example.fastanswer.AboutPage"
+    android:background="@color/white">
 
     <include layout="@layout/application_bar"/>
 
@@ -19,6 +20,8 @@
         android:layout_marginRight="56dp"
         android:layout_marginLeft="56dp"
         android:layout_marginBottom="50dp"
+
+        android:background="@color/white"
 
         android:text="@string/about_text"
         android:textSize="25dp"

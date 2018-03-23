@@ -33,6 +33,9 @@ public class RecordsPage extends Activity {
         setContentView(R.layout.activity_records_page);
 
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
+        TextView TextActionBar      = (TextView)findViewById(R.id.convert_actionbar_title);
+        TextActionBar.setTypeface(Font);
+        TextActionBar.setText("Records");
 
         ListRecords = (ListView)findViewById(R.id.ListRecords);
 

@@ -5,12 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.fastanswer.HomePage">
+    tools:context="com.example.fastanswer.HomePage"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/Title"
@@ -19,6 +22,8 @@
 
             android:layout_marginTop="20dp"
             android:gravity="center"
+
+            android:background="@color/white"
 
             android:text="@string/app_name"
             android:textSize="50dp"
@@ -31,6 +36,7 @@
         android:id="@+id/Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
 
         android:layout_marginTop="60dp">
 
@@ -93,6 +99,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
+        android:background="@color/white"
+
         android:gravity="bottom"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp">
@@ -103,6 +111,8 @@
             android:layout_height="wrap_content"
 
             android:layout_gravity="center"
+
+            android:background="@color/white"
 
             android:text="@string/footer_text"
             android:textSize="12sp"

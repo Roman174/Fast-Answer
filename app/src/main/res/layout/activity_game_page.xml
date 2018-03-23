@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.fastanswer.GamePage">
+    tools:context="com.example.fastanswer.GamePage"
+    android:background="@color/white">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -22,6 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
 
+            android:background="@color/white"
+
             android:text="@string/score"
             android:gravity="center"
             android:textSize="20dp"/>
@@ -30,6 +33,8 @@
             android:id="@+id/ScoreView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:background="@color/white"
 
             android:text="0"
             android:gravity="center"
@@ -45,6 +50,8 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
 
+        android:background="@color/white"
+
         android:text="7 - 5"
         android:gravity="center"
         android:textSize="90dp"/>
@@ -53,14 +60,18 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
 
+        android:background="@color/white"
+
         android:text="="
         android:gravity="center"
-        android:textSize="90dp"/>
+        android:textSize="60dp"/>
 
     <TextView
         android:id="@+id/GamePageResult"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
+
+        android:background="@color/white"
 
         android:layout_gravity="center"
         android:text="2"
@@ -70,6 +81,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="110dp"
+
+        android:background="@color/white"
 
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
