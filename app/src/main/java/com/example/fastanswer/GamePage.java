@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.StringReader;
 import java.util.Random;
 import java.util.Timer;
@@ -16,9 +18,13 @@ import java.util.TimerTask;
 
 public class GamePage extends Activity {
 
-    int count;
+    private int count;
+    private int Speed;
+
     private Timer timer;
     private Question Quest;
+
+    private TextView ScoreView;
 
     private TextView QuestionView;
     private TextView ResultView;
@@ -27,13 +33,19 @@ public class GamePage extends Activity {
     private TextView ButtonAnswerFalse;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
 
         count = 0;
+        Speed = 1500;
+
         Quest = new Question();
         timer = new Timer();
+
+        ScoreView    = (TextView)findViewById(R.id.ScoreView);
+        ScoreView.setText(String.valueOf(count));
+
         QuestionView = (TextView)findViewById(R.id.GamePageQuestion);
         ResultView   = (TextView)findViewById(R.id.GamePageResult);
 
@@ -43,44 +55,20 @@ public class GamePage extends Activity {
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
         SetFont(Font);
 
-
-
+        SetQuestion();
+        StartInitialTimer();
 
         ButtonAnswerFalse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int res = Integer.parseInt(ResultView.getText().toString());
                 if(!Quest.isCorrect(res)) {
-                    try {
-                        timer.cancel();
-                        timer = null;
-                    } catch (Exception e) {}
+                    TimerStop();
                     SetQuestion();
-                    count ++;
+                    incScore();
                     isAnswered = true;
-
-                    timer = new Timer();
-                    timer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    if(isAnswered)
-                                        isAnswered = false;
-                                    else {
-                                        Intent intent = new Intent(GamePage.this, GameOverPage.class);
-                                        startActivity(intent);
-                                        GamePage.this.finish();
-                                        timer.cancel();
-                                    }
-                                }
-                            });
-                        }
-                    }, 0, 3000);
-
-                } else ShowMessage(String.valueOf(count));
+                    TimerStart(Speed);
+                } else GameOver();
             }
         });
 
@@ -89,39 +77,18 @@ public class GamePage extends Activity {
             public void onClick(View v) {
                 int res = Integer.parseInt(ResultView.getText().toString());
                 if(Quest.isCorrect(res)) {
-                    try {
-                        timer.cancel();
-                        timer = null;
-                    } catch (Exception e) {}
+                    TimerStop();
+                    incScore();
                     SetQuestion();
-                    count ++;
                     isAnswered = true;
-
-                    timer = new Timer();
-                    timer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(isAnswered)
-                                        isAnswered = false;
-                                    else {
-                                        Intent intent = new Intent(GamePage.this, GameOverPage.class);
-                                        startActivity(intent);
-                                        GamePage.this.finish();
-                                        timer.cancel();
-                                    }
-                                }
-                            });
-                        }
-                    }, 0, 3000);
-                } else ShowMessage(String.valueOf(count));
+                    TimerStart(Speed);
+                } else GameOver();
             }
         });
     }
 
     private void SetFont(Typeface Font) {
+        ScoreView.setTypeface(Font);
         QuestionView.setTypeface(Font);
         ResultView.setTypeface(Font);
         ButtonAnswerTrue.setTypeface(Font);
@@ -164,34 +131,66 @@ public class GamePage extends Activity {
         }
     }
 
+    private void incScore() {
+        count ++;
+        ScoreView.setText(String.valueOf(count));
+    }
+
     private boolean isAnswered = false;
 
-    public void PlayGame() {
-        new Thread(new Runnable() {
-            public void run() {
-                while(true) { //бесконечно крутим
-                    try {
-                        Thread.sleep(3000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ShowMessage("started");
+    private void GameOver() {
+        Intent intent = new Intent(GamePage.this, GameOverPage.class);
+        intent.putExtra("Score", count);
+        startActivity(intent);
+        GamePage.this.finish();
+        timer.cancel();
+    }
 
-                                if (isAnswered) {
-                                    isAnswered = false;
-                                }
-                                else {
-                                    GamePage.this.finish();
-                                }
-                            }
-                        });
-                        Thread.sleep(3000); // 4 секунды в милисекундах
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+    private void StartInitialTimer() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(isAnswered)
+                            isAnswered = false;
+                        else {
+                            GameOver();
+                        }
                     }
-                }
+                });
             }
-        }).start();
+        }, 1500, Speed);
+    }
+
+    private void TimerStart(int Speed) {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(isAnswered)
+                            isAnswered = false;
+                        else {
+                            GameOver();
+                        }
+                    }
+                });
+            }
+        }, 0, Speed);
+    }
+
+    private void TimerStop() {
+        try {
+            timer.cancel();
+            timer = null;
+        } catch (Exception e) {}
     }
 
     private void ShowMessage(String message) {

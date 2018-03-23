@@ -34,13 +34,9 @@ public class RecordsPage extends Activity {
 
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
 
-        TextView TextStatusBar = (TextView)findViewById(R.id.convert_actionbar_title);
-        TextStatusBar.setTypeface(Font);
-        TextStatusBar.setText("Records");
+        ListRecords = (ListView)findViewById(R.id.ListRecords);
 
-        ListRecords      = (ListView)findViewById(R.id.ListRecords);
-
-        ButtonBack       = (TextView)findViewById(R.id.ButtonBack);
+        ButtonBack  = (TextView)findViewById(R.id.ButtonBack);
         ButtonBack.setTypeface(Font);
 
         final MediaPlayer player = MediaPlayer.create(this, R.raw.button_click);
@@ -100,6 +96,8 @@ public class RecordsPage extends Activity {
             return;
         }
     }
+
+
 
     private String[] GetListRecods(String DataFile){
         String Records[] = DataFile.split(" ");

@@ -2,6 +2,7 @@ package com.example.fastanswer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +17,14 @@ public class GameOverPage extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_over_page);
 
+        TextView ScoreView = (TextView)findViewById(R.id.Score);
+        Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
+        ScoreView.setTypeface(Font);
+
+        Intent intent = getIntent();
+        int Score = intent.getIntExtra("Score", 0);
+        ScoreView.setText(String.format("Score: %d", Score));
+
         TextView ButtonOk = (TextView)findViewById(R.id.GameOverPageButton);
         ButtonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -25,5 +34,6 @@ public class GameOverPage extends Activity {
                 GameOverPage.this.finish();
             }
         });
+
     }
 }
