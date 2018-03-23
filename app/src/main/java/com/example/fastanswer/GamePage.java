@@ -1,6 +1,7 @@
 package com.example.fastanswer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
@@ -11,11 +12,12 @@ import android.widget.Toast;
 import java.io.StringReader;
 import java.util.Random;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class GamePage extends Activity {
 
     int count;
-
+    private Timer timer;
     private Question Quest;
 
     private TextView QuestionView;
@@ -31,7 +33,7 @@ public class GamePage extends Activity {
 
         count = 0;
         Quest = new Question();
-
+        timer = new Timer();
         QuestionView = (TextView)findViewById(R.id.GamePageQuestion);
         ResultView   = (TextView)findViewById(R.id.GamePageResult);
 
@@ -41,16 +43,43 @@ public class GamePage extends Activity {
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
         SetFont(Font);
 
-        PlayGame();
+
+
 
         ButtonAnswerFalse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int res = Integer.parseInt(ResultView.getText().toString());
                 if(!Quest.isCorrect(res)) {
+                    try {
+                        timer.cancel();
+                        timer = null;
+                    } catch (Exception e) {}
                     SetQuestion();
                     count ++;
                     isAnswered = true;
+
+                    timer = new Timer();
+                    timer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if(isAnswered)
+                                        isAnswered = false;
+                                    else {
+                                        Intent intent = new Intent(GamePage.this, GameOverPage.class);
+                                        startActivity(intent);
+                                        GamePage.this.finish();
+                                        timer.cancel();
+                                    }
+                                }
+                            });
+                        }
+                    }, 0, 3000);
+
                 } else ShowMessage(String.valueOf(count));
             }
         });
@@ -60,9 +89,33 @@ public class GamePage extends Activity {
             public void onClick(View v) {
                 int res = Integer.parseInt(ResultView.getText().toString());
                 if(Quest.isCorrect(res)) {
+                    try {
+                        timer.cancel();
+                        timer = null;
+                    } catch (Exception e) {}
                     SetQuestion();
                     count ++;
                     isAnswered = true;
+
+                    timer = new Timer();
+                    timer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(isAnswered)
+                                        isAnswered = false;
+                                    else {
+                                        Intent intent = new Intent(GamePage.this, GameOverPage.class);
+                                        startActivity(intent);
+                                        GamePage.this.finish();
+                                        timer.cancel();
+                                    }
+                                }
+                            });
+                        }
+                    }, 0, 3000);
                 } else ShowMessage(String.valueOf(count));
             }
         });

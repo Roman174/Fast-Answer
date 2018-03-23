@@ -7,4 +7,7 @@
     <string name="about_text">
         This application will help you develop your response, mindfulness, and also check the knowledge of mathematics
     </string>
+
+    <string name="ok_button">Ok</string>
+    <string name="game_over">Game Over</string>
 </resources>

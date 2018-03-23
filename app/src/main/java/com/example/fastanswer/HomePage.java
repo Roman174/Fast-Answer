@@ -51,6 +51,9 @@ public class HomePage extends Activity {
         ButtonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, GamePage.class);
+                player.start();
+                startActivity(intent);
             }
         });
 
