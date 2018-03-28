@@ -2,7 +2,9 @@ package com.example.fastanswer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
@@ -67,15 +69,19 @@ public class GamePage extends Activity {
         SetQuestion();
         StartTimer();
 
-        final MediaPlayer playerSuccess = MediaPlayer.create(this, R.raw.success);
+        final MediaPlayer playerSuccess = MediaPlayer.create(this, R.raw.button_click);
         final MediaPlayer playerFailed  = MediaPlayer.create(this, R.raw.failed);
 
         ButtonAnswerFalse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isCorrectResult()){
+                    playerSuccess.start();
                     SuccessAnswer();
-                } else GameOver();
+                } else {
+                    playerFailed.start();
+                    GameOver();
+                }
             }
         });
 
@@ -83,8 +89,12 @@ public class GamePage extends Activity {
             @Override
             public void onClick(View v) {
                 if (isCorrectResult()) {
+                    playerSuccess.start();
                     SuccessAnswer();
-                } else GameOver();
+                } else {
+                    playerFailed.start();
+                    GameOver();
+                }
             }
         });
     }
@@ -117,7 +127,7 @@ public class GamePage extends Activity {
             @Override
             public void onTick(long millisUntilFinished) {
                 ProgressBar.setProgress(progress);
-                progress-=2;
+                progress-=1;
             }
 
             @Override
@@ -178,6 +188,12 @@ public class GamePage extends Activity {
     private void ShowMessage(String message) {
         Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    private void SetColorProgressBar() {
+        Drawable progressDrawable = ProgressBar.getProgressDrawable().mutate();
+        progressDrawable.setColorFilter(Color.DKGRAY, android.graphics.PorterDuff.Mode.SRC_IN);
+        ProgressBar.setProgressDrawable(progressDrawable);
     }
 
 }

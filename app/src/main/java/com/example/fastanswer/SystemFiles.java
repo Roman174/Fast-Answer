@@ -47,13 +47,13 @@ public final class SystemFiles {
         try {
             JsonString = ReadFile(FileNameRecords);
         } catch (Exception e) {
-            return new int[] {0};
+            return new int[] {0, 0, 0, 0, 0};
         }
 
         Gson gson = new Gson();
         int[] Records = gson.fromJson(JsonString, int[].class);
         if(Records == null)
-            return new int[] {0};
+            return new int[] {0, 0, 0, 0, 0};
         return Records;
     }
 
