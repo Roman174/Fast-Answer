@@ -3,9 +3,12 @@ package com.example.fastanswer;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +22,8 @@ import java.util.TimerTask;
 public class GamePage extends Activity {
 
     private int count;
-    private int Speed;
+    private final int Speed = 2000;
+    private final int Interval = 10;
 
     private Timer timer;
     private Question Quest;
@@ -32,13 +36,15 @@ public class GamePage extends Activity {
     private TextView ButtonAnswerTrue;
     private TextView ButtonAnswerFalse;
 
+    private ProgressBar ProgressBar;
+    private CountDownTimer countDownTimer;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
 
         count = 0;
-        Speed = 1500;
 
         Quest = new Question();
         timer = new Timer();
@@ -52,22 +58,23 @@ public class GamePage extends Activity {
         ButtonAnswerTrue  = (TextView)findViewById(R.id.ButtonAnswerTrue);
         ButtonAnswerFalse = (TextView)findViewById(R.id.ButtonAnswerFalse);
 
+        ProgressBar = (ProgressBar)findViewById(R.id.progressbar);
+        ProgressBar.setProgress(100);
+
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
         SetFont(Font);
 
         SetQuestion();
-        StartInitialTimer();
+        StartTimer();
+
+        final MediaPlayer playerSuccess = MediaPlayer.create(this, R.raw.success);
+        final MediaPlayer playerFailed  = MediaPlayer.create(this, R.raw.failed);
 
         ButtonAnswerFalse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int res = Integer.parseInt(ResultView.getText().toString());
-                if(!Quest.isCorrect(res)) {
-                    TimerStop();
-                    SetQuestion();
-                    incScore();
-                    isAnswered = true;
-                    TimerStart(Speed);
+                if(!isCorrectResult()){
+                    SuccessAnswer();
                 } else GameOver();
             }
         });
@@ -75,13 +82,8 @@ public class GamePage extends Activity {
         ButtonAnswerTrue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int res = Integer.parseInt(ResultView.getText().toString());
-                if(Quest.isCorrect(res)) {
-                    TimerStop();
-                    incScore();
-                    SetQuestion();
-                    isAnswered = true;
-                    TimerStart(Speed);
+                if (isCorrectResult()) {
+                    SuccessAnswer();
                 } else GameOver();
             }
         });
@@ -93,6 +95,41 @@ public class GamePage extends Activity {
         ResultView.setTypeface(Font);
         ButtonAnswerTrue.setTypeface(Font);
         ButtonAnswerFalse.setTypeface(Font);
+    }
+
+    private boolean isCorrectResult() {
+        int res = Integer.parseInt(ResultView.getText().toString());
+        return Quest.isCorrect(res);
+    }
+
+    public void SuccessAnswer() {
+        countDownTimer.cancel();
+        incScore();
+        SetQuestion();
+        isAnswered = false;
+        StartTimer();
+    }
+
+    int progress;
+    private void StartTimer() {
+        progress = 100;
+        countDownTimer = new CountDownTimer(Speed, Interval) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                ProgressBar.setProgress(progress);
+                progress-=2;
+            }
+
+            @Override
+            public void onFinish() {
+                if(!isAnswered) GameOver();
+                else {
+                    SetQuestion();
+                }
+            }
+        };
+
+        countDownTimer.start();
     }
 
     public void SetQuestion() {
@@ -111,22 +148,15 @@ public class GamePage extends Activity {
                 String stringResult = String.valueOf(RandomNumber.nextInt(max - min + 1) + min);
                 try {
                     ResultView.setText(stringResult);
-                } catch (Exception exc) {
-                    String aaa = exc.getMessage();
-                    ShowMessage(aaa);
-                }
+                } catch (Exception exc) { }
                 break;
 
             case 1:
-                String aaa = "";
                 try {
                     ResultView.setText(String.valueOf(Quest.getResult()));
                     break;
                 }
-                catch (Exception exc) {
-                    aaa = exc.getMessage();
-                    ShowMessage(aaa);
-                }
+                catch (Exception exc) { }
 
         }
     }
@@ -137,60 +167,12 @@ public class GamePage extends Activity {
     }
 
     private boolean isAnswered = false;
-
     private void GameOver() {
+        countDownTimer.cancel();
         Intent intent = new Intent(GamePage.this, GameOverPage.class);
         intent.putExtra("Score", count);
         startActivity(intent);
         GamePage.this.finish();
-        timer.cancel();
-    }
-
-    private void StartInitialTimer() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if(isAnswered)
-                            isAnswered = false;
-                        else {
-                            GameOver();
-                        }
-                    }
-                });
-            }
-        }, 1500, Speed);
-    }
-
-    private void TimerStart(int Speed) {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if(isAnswered)
-                            isAnswered = false;
-                        else {
-                            GameOver();
-                        }
-                    }
-                });
-            }
-        }, 0, Speed);
-    }
-
-    private void TimerStop() {
-        try {
-            timer.cancel();
-            timer = null;
-        } catch (Exception e) {}
     }
 
     private void ShowMessage(String message) {

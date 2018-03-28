@@ -24,6 +24,8 @@ public class GameOverPage extends Activity {
         Intent intent = getIntent();
         int Score = intent.getIntExtra("Score", 0);
         ScoreView.setText(String.format("Score: %d", Score));
+        SystemFiles systemFiles = new SystemFiles(GameOverPage.this);
+        systemFiles.SaveRecords(Score);
 
         TextView ButtonOk = (TextView)findViewById(R.id.GameOverPageButton);
         ButtonOk.setOnClickListener(new View.OnClickListener() {
@@ -34,6 +36,5 @@ public class GameOverPage extends Activity {
                 GameOverPage.this.finish();
             }
         });
-
     }
 }

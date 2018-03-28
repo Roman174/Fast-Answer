@@ -17,6 +17,8 @@ public class HomePage extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
+        //deleteFile("records.rec");
+
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
 
         TextView Title         = (TextView)findViewById(R.id.Title);

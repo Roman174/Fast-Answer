@@ -19,7 +19,6 @@ import java.io.OutputStreamWriter;
 
 public class RecordsPage extends Activity {
 
-    final String FileName = "records.rec";
     String DataFile;
     int sizeFile = 0;
 
@@ -32,14 +31,14 @@ public class RecordsPage extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_records_page);
 
-        Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
-        TextView TextActionBar      = (TextView)findViewById(R.id.convert_actionbar_title);
+        Typeface Font = Typeface.createFromAsset(getAssets(), "fonts/Roboto.ttf");
+        TextView TextActionBar = (TextView) findViewById(R.id.convert_actionbar_title);
         TextActionBar.setTypeface(Font);
         TextActionBar.setText("Records");
 
-        ListRecords = (ListView)findViewById(R.id.ListRecords);
+        ListRecords = (ListView) findViewById(R.id.ListRecords);
 
-        ButtonBack  = (TextView)findViewById(R.id.ButtonBack);
+        ButtonBack = (TextView) findViewById(R.id.ButtonBack);
         ButtonBack.setTypeface(Font);
 
         final MediaPlayer player = MediaPlayer.create(this, R.raw.button_click);
@@ -51,59 +50,21 @@ public class RecordsPage extends Activity {
             }
         });
 
-        String[] Records;
-        try {
-            DataFile = ReadRecords(FileName);
-        } catch (Exception exc) {
-            DataFile = null;
-        }
+        SystemFiles systemFiles = new SystemFiles(this);
+        int[] Records = systemFiles.ReadRecords();
 
-        Records = new String[5];
-        if(DataFile != null && DataFile != "") {
-            Records = GetListRecods(DataFile);
-        } else {
-            for (int i = 0; i < 5; i++)
-                Records[i] = "0 - Player";
-        }
+        Integer[] IntegerRecords = ArrIntToArrInteger(Records);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.aligment_center, Records);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,
+                R.layout.aligment_center, IntegerRecords);
         ListRecords.setAdapter(adapter);
     }
 
-    private String ReadRecords(String FileName) throws Exception {
-        FileInputStream fIn = openFileInput(FileName);
-        InputStreamReader isr = new InputStreamReader(fIn);
-        StringBuilder stringBuilder = new StringBuilder();
+    private Integer[] ArrIntToArrInteger(int[] arr) {
+        Integer[] result = new Integer[arr.length];
+        for (int i=0; i<arr.length; i++)
+            result[i] = new Integer(arr[i]);
 
-        int temp;
-        while((temp = isr.read()) != -1) {
-            char symblol = (char)temp;
-            stringBuilder.append((symblol));
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private void WriteRecords(String FileName, String Records){
-        try {
-            FileOutputStream fileOutputStream = openFileOutput(FileName, MODE_PRIVATE);
-            OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream);
-            writer.write(Records);
-            writer.flush();
-            writer.close();
-
-            sizeFile = Records.length();
-        }
-        catch (Exception e) {
-            return;
-        }
-    }
-
-
-
-    private String[] GetListRecods(String DataFile){
-        String Records[] = DataFile.split(" ");
-        return  Records;
+        return result;
     }
 }
