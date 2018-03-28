@@ -56,6 +56,7 @@ public class HomePage extends Activity {
                 Intent intent = new Intent(HomePage.this, GamePage.class);
                 player.start();
                 startActivity(intent);
+                HomePage.this.finish();
             }
         });
 
