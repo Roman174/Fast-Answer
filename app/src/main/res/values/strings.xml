@@ -11,4 +11,10 @@
     <string name="ok_button">Ok</string>
     <string name="game_over">Game Over</string>
     <string name="score">Score:</string>
+
+    <string-array name="list_complexity">
+        <item>Easy</item>
+        <item>Normal</item>
+        <item>Hard</item>
+    </string-array>
 </resources>

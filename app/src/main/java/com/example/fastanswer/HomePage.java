@@ -33,10 +33,11 @@ public class HomePage extends Activity {
         TextView ButtonPlay    = (TextView)findViewById(R.id.ButtonPlay);
         ButtonPlay.setTypeface(Font);
 
+        TextView ButtonSettings = (TextView)findViewById(R.id.ButtonSettings);
+        ButtonSettings.setTypeface(Font);
+
         TextView ButtonAbout   = (TextView)findViewById(R.id.ButtonAbout);
         ButtonAbout.setTypeface(Font);
-
-        ButtonAbout.setWidth(ButtonPlay.getWidth());
 
         final MediaPlayer player = MediaPlayer.create(this, R.raw.button_click);
 
@@ -57,6 +58,15 @@ public class HomePage extends Activity {
                 player.start();
                 startActivity(intent);
                 HomePage.this.finish();
+            }
+        });
+
+        ButtonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, SettingsPage.class);
+                player.start();
+                startActivity(intent);
             }
         });
 

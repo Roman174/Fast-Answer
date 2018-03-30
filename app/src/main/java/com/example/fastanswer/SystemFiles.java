@@ -16,25 +16,27 @@ import java.util.ArrayList;
 
 public final class SystemFiles {
     final String FileNameRecords = "records.rec";
+    final String FileNameSettings = "settings.ini";
     private Context context;
 
     public SystemFiles(Context context) {
         this.context = context;
     }
 
-    public void SaveRecords(int record) {
-        int[] Records = ReadRecords();
+    public void SaveRecords(int record, String PlayerName) {
+        Record[] Records = ReadRecords();
         int position = 0;
-        int min = Records[0];
+        int min = Records[0].Record;
 
         for (int i=0; i<Records.length; i++) {
-            if(Records[i] < min) {
-                min = Records[i];
+            if(Records[i].Record < min) {
+                min = Records[i].Record;
                 position = i;
             }
         }
 
-        Records[position] = record;
+        Records[position].Record = record;
+        Records[position].PlayerName = PlayerName;
         Sort(Records);
 
         Gson gson = new Gson();
@@ -42,20 +44,70 @@ public final class SystemFiles {
         SaveFile(FileNameRecords, JsonString);
     }
 
-    public int[] ReadRecords() {
+    public Record[] ReadRecords() {
         String JsonString;
         try {
             JsonString = ReadFile(FileNameRecords);
         } catch (Exception e) {
-            return new int[] {0, 0, 0, 0, 0};
+            Record[] res = new Record[5];
+            for (int i=0; i< 5; i++)
+                res[i] = new Record();
+
+            return res;
         }
 
         Gson gson = new Gson();
-        int[] Records = gson.fromJson(JsonString, int[].class);
-        if(Records == null)
-            return new int[] {0, 0, 0, 0, 0};
+        Record[] Records = gson.fromJson(JsonString, Record[].class);
+        if(Records == null) {
+            Record[] res = new Record[5];
+            for (int i=0; i< 5; i++)
+                res[i] = new Record();
+
+            return res;
+        }
         return Records;
     }
+
+    public static void Sort(Record[] array) {
+        int last = array.length;
+
+        for ( boolean sorted = last == 0; !sorted; --last )
+        {
+            sorted = true;
+            for ( int i = 1; i < last; ++i )
+            {
+                if ( array[i-1].Record < array[i].Record )
+                {
+                    sorted = false;
+
+                    Record tmp = array[i-1];
+                    array[i-1] = array[i];
+                    array[i] = tmp;
+                }
+            }
+        }
+    }
+
+
+    public  void SaveSettings(Settings settings) {
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(settings);
+        SaveFile(FileNameSettings, jsonString);
+    }
+
+    public Settings ReadSettings() {
+        Settings settings;
+        try {
+            String jsonString = ReadFile(FileNameSettings);
+            Gson gson = new Gson();
+            settings = gson.fromJson(jsonString, Settings.class);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return settings;
+    }
+
 
     private void SaveFile(String fileName, String fileData) {
         try {
@@ -81,25 +133,5 @@ public final class SystemFiles {
         }
 
         return stringBuilder.toString();
-    }
-
-    public static void Sort(int[] array) {
-        int last = array.length;
-
-        for ( boolean sorted = last == 0; !sorted; --last )
-        {
-            sorted = true;
-            for ( int i = 1; i < last; ++i )
-            {
-                if ( array[i-1] < array[i] )
-                {
-                    sorted = false;
-
-                    int tmp = array[i-1];
-                    array[i-1] = array[i];
-                    array[i] = tmp;
-                }
-            }
-        }
     }
 }

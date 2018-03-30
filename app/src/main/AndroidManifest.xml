@@ -18,8 +18,9 @@
         </activity>
         <activity android:name=".RecordsPage" />
         <activity android:name=".AboutPage" />
-        <activity android:name=".GamePage"></activity>
-        <activity android:name=".GameOverPage"></activity>
+        <activity android:name=".GamePage" />
+        <activity android:name=".GameOverPage" />
+        <activity android:name=".SettingsPage"></activity>
     </application>
 
 </manifest>

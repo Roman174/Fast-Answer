@@ -6,31 +6,20 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Size;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.io.StringReader;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GamePage extends Activity {
 
     private int count;
-    private final int Speed = 2000;
-    private final int Interval = 10;
-    private final int sizeProgress = 6;
-    private final int SizeProgress = 390;
 
-    private Timer timer;
+    Settings settings;
+
     private Question Quest;
 
     private TextView ScoreView;
@@ -44,16 +33,25 @@ public class GamePage extends Activity {
     private ProgressBar ProgressBar;
     private CountDownTimer countDownTimer;
 
+    private Settings Settings;
+    SystemFiles systemFiles;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
 
         count = 0;
+        systemFiles = new SystemFiles(this);
+        settings =  systemFiles.ReadSettings();
+
+        if(settings == null) {
+            settings = new Settings();
+            settings.SetEasy();
+            systemFiles.SaveSettings(settings);
+        }
 
         Quest = new Question();
-        timer = new Timer();
-
         ScoreView    = (TextView)findViewById(R.id.ScoreView);
         ScoreView.setText(String.valueOf(count));
 
@@ -64,7 +62,7 @@ public class GamePage extends Activity {
         ButtonAnswerFalse = (TextView)findViewById(R.id.ButtonAnswerFalse);
 
         ProgressBar = (ProgressBar)findViewById(R.id.progressbar);
-        ProgressBar.setMax(SizeProgress);
+        ProgressBar.setMax(settings.ProgressSize);
         ProgressBar.setProgress(100);
 
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
@@ -126,12 +124,12 @@ public class GamePage extends Activity {
 
     int progress;
     private void StartTimer() {
-        progress = SizeProgress;
-        countDownTimer = new CountDownTimer(Speed, Interval) {
+        progress = settings.ProgressSize;
+        countDownTimer = new CountDownTimer(settings.Speed, settings.Interval) {
             @Override
             public void onTick(long millisUntilFinished) {
                 ProgressBar.setProgress(progress);
-                progress-=sizeProgress;
+                progress-=settings.DecrementSize;
             }
 
             @Override
@@ -147,7 +145,19 @@ public class GamePage extends Activity {
     }
 
     public void SetQuestion() {
-        int min = 1, max = 9;
+        int min, max;
+        switch (settings.levelComplexity) {
+            case 0:
+                min = 1;
+                max = 9;
+                break;
+
+            default:
+                min = 1;
+                max = 20;
+                break;
+        }
+
         Random RandomNumber = new Random();
         int FirstNumber       = RandomNumber.nextInt(max - min + 1) + min;
         int SecondNumber      = RandomNumber.nextInt(max - min + 1) + min;
@@ -185,6 +195,7 @@ public class GamePage extends Activity {
         countDownTimer.cancel();
         Intent intent = new Intent(GamePage.this, GameOverPage.class);
         intent.putExtra("Score", count);
+        intent.putExtra("PlayerName", settings.PlayerName);
         startActivity(intent);
         GamePage.this.finish();
     }

@@ -1,23 +1,24 @@
 package com.example.fastanswer;
 
-import android.widget.ProgressBar;
-
 /**
  * Created by 174pr on 29.03.2018.
  */
 
 public class Settings {
-    private String PlayerName;
-    private int ProgressSize;
-    private int DecrementSize;
-    private int Speed;
-    private int Interval;
+    public String PlayerName;
+    public int ProgressSize;
+    public int DecrementSize;
+    public int Speed;
+    public int Interval;
+
+    int levelComplexity;
 
     public Settings() {
         PlayerName = null;
         DecrementSize = 1;
         Speed = 1;
         Interval = 1;
+        levelComplexity = 0;
     }
 
 //    public void SetEasy() {
@@ -30,6 +31,7 @@ public class Settings {
         Interval = 10;
         DecrementSize = 2;
         ProgressSize = 100;
+        levelComplexity = 2;
     }
 
     public void SetNormal() {
@@ -37,5 +39,14 @@ public class Settings {
         Interval = 10;
         DecrementSize = 6;
         ProgressSize = 390;
+        levelComplexity = 1;
+    }
+
+    public void SetEasy() {
+        Speed = 3500;
+        Interval = 10;
+        DecrementSize = 9;
+        ProgressSize = 950;
+        levelComplexity = 0;
     }
 }

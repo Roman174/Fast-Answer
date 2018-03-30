@@ -51,19 +51,19 @@ public class RecordsPage extends Activity {
         });
 
         SystemFiles systemFiles = new SystemFiles(this);
-        int[] Records = systemFiles.ReadRecords();
+        Record[] Records = systemFiles.ReadRecords();
 
-        Integer[] IntegerRecords = ArrIntToArrInteger(Records);
+        String[] StringRecords = ArrIntToArrInteger(Records);
 
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,
-                R.layout.aligment_center, IntegerRecords);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.aligment_center, StringRecords);
         ListRecords.setAdapter(adapter);
     }
 
-    private Integer[] ArrIntToArrInteger(int[] arr) {
-        Integer[] result = new Integer[arr.length];
+    private String[] ArrIntToArrInteger(Record[] arr) {
+        String[] result = new String[arr.length];
         for (int i=0; i<arr.length; i++)
-            result[i] = new Integer(arr[i]);
+            result[i] = String.format("%d - " + arr[i].PlayerName, arr[i].Record);
 
         return result;
     }
