@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Size;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ public class GamePage extends Activity {
     private int count;
     private final int Speed = 2000;
     private final int Interval = 10;
+    private final int sizeProgress = 6;
+    private final int SizeProgress = 390;
 
     private Timer timer;
     private Question Quest;
@@ -61,6 +64,7 @@ public class GamePage extends Activity {
         ButtonAnswerFalse = (TextView)findViewById(R.id.ButtonAnswerFalse);
 
         ProgressBar = (ProgressBar)findViewById(R.id.progressbar);
+        ProgressBar.setMax(SizeProgress);
         ProgressBar.setProgress(100);
 
         Typeface Font = Typeface.createFromAsset(getAssets(),  "fonts/Roboto.ttf");
@@ -122,12 +126,12 @@ public class GamePage extends Activity {
 
     int progress;
     private void StartTimer() {
-        progress = 100;
+        progress = SizeProgress;
         countDownTimer = new CountDownTimer(Speed, Interval) {
             @Override
             public void onTick(long millisUntilFinished) {
                 ProgressBar.setProgress(progress);
-                progress-=1;
+                progress-=sizeProgress;
             }
 
             @Override
